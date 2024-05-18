@@ -1,0 +1,13 @@
+[package]
+name = "pd"
+version = "0.1.0"
+edition = "2021"
+authors = ["BH1XUW <bh1xuw@gmail.com>"]
+repository = "https://github.com/embedded-drivers/pd"
+documentation = "https://docs.rs/pd"
+homepage = "https://github.com/embedded-drivers/pd"
+categories = ["no-std", "hardware-support"]
+description = "USB Power Delivery (USB PD) protocol layer"
+keywords = ["usb", "pd"]
+readme = "README.md"
+license = "MIT/Apache-2.0"
