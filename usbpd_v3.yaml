@@ -1,0 +1,754 @@
+block/USBPD:
+  description: USBPD protocol.
+  items:
+fieldset/HEADER:
+  description: Message Header.
+  bit_size: 16
+  fields:
+    - name: EXTENDED
+      description: Extended message.
+      bit_offset: 15
+      bit_size: 1
+    - name: NUMBER_OF_DATA_OBJECTS
+      description: Number of data objects.
+      bit_offset: 12
+      bit_size: 3
+    - name: MESSAGE_ID
+      description: Message ID.
+      bit_offset: 9
+      bit_size: 3
+    - name: PORT_POWER_ROLE
+      description: Port power role.
+      bit_offset: 8
+      bit_size: 1
+      enum: PORT_POWER_ROLE
+    - name: SPEC_REVISION
+      description: Specification revision.
+      bit_offset: 6
+      bit_size: 2
+      enum: SPEC_REVISION
+    - name: PORT_DATA_ROLE
+      description: Port data role.
+      bit_offset: 5
+      bit_size: 1
+      enum: PORT_DATA_ROLE
+    - name: CONTROL_MESSAGE_TYPE
+      description: Message type.
+      bit_offset: 0
+      bit_size: 5
+      enum: CONTROL_MESSAGE_TYPE
+    - name: DATA_MESSAGE_TYPE
+      description: Message type.
+      bit_offset: 0
+      bit_size: 5
+      enum: DATA_MESSAGE_TYPE
+    - name: EXTENDED_MESSAGE_TYPE
+      description: Extended message type.
+      bit_offset: 0
+      bit_size: 5
+      enum: EXTENDED_MESSAGE_TYPE
+
+fieldset/EXTENDED_HEADER:
+  description: Extended message header.
+  bit_size: 16
+  fields:
+    - name: CHUNKED
+      description: Chunked message.
+      bit_offset: 15
+      bit_size: 1
+    - name: CHUNK_NUMBER
+      description: Chunk number.
+      bit_offset: 11
+      bit_size: 4
+    - name: REQUEST_CHUNK
+      description: Request chunk.
+      bit_offset: 10
+      bit_size: 1
+    - name: DATA_SIZE
+      description: Data size.
+      bit_offset: 0
+      bit_size: 8
+
+fieldset/PDO:
+  description: Power Data Object.
+  bit_size: 32
+  fields:
+    - name: PDO_TYPE
+      description: Data object type
+      bit_offset: 30
+      bit_size: 2
+fieldset/FIXED_PDO:
+  description: Fixed supply PDO.
+  bit_size: 32
+  extends: PDO
+  fields:
+    - name: DUAL_ROLE_POWER
+      description: Dual role power.
+      bit_offset: 29
+      bit_size: 1
+    - name: USB_SUSPEND_SUPPORTED
+      description: USB Suspend supported.
+      bit_offset: 28
+      bit_size: 1
+    - name: UNCONSTRAINED_POWER
+      description: Unconstrained power.
+      bit_offset: 27
+      bit_size: 1
+    - name: USB_COMMUNICATION_CAPABLE
+      description: USB communication capable.
+      bit_offset: 26
+      bit_size: 1
+    - name: DUAL_ROLE_DATA
+      description: Dual role data.
+      bit_offset: 25
+      bit_size: 1
+    - name: UNCHUNKED_EXTENDED_MESSAGES_SUPPORTED
+      description: Unchunked extended messages supported.
+      bit_offset: 24
+      bit_size: 1
+    - name: EPR_MODE_SUPPORTED
+      description: Extended power range mode supported.
+      bit_offset: 23
+      bit_size: 1
+    - name: PEAK_CURRENT
+      description: Peak current.
+      bit_offset: 20
+      bit_size: 2
+      enum: PEAK_CURRENT
+    - name: VOLTAGE_50MV
+      description: Voltage in 50mV units.
+      bit_offset: 10
+      bit_size: 10
+    - name: MAX_CURRENT_10MA
+      description: Maximum current in 10mA units.
+      bit_offset: 0
+      bit_size: 10
+fieldset/VARIABLE_PDO:
+  description: Variable supply PDO. (non-battery)
+  bit_size: 32
+  extends: PDO
+  fields:
+    - name: MAX_VOLTAGE_50MV
+      description: Maximum voltage in 50mV units.
+      bit_offset: 20
+      bit_size: 10
+    - name: MIN_VOLTAGE_50MV
+      description: Minimum voltage in 50mV units.
+      bit_offset: 10
+      bit_size: 10
+    - name: MAX_CURRENT_10MA
+      description: Maximum current in 10mA units.
+      bit_offset: 0
+      bit_size: 10
+fieldset/BATTERY_PDO:
+  description: Battery supply PDO.
+  bit_size: 32
+  extends: PDO
+  fields:
+    - name: MAX_VOLTAGE_50MV
+      description: Maximum voltage in 50mV units.
+      bit_offset: 20
+      bit_size: 10
+    - name: MIN_VOLTAGE_50MV
+      description: Minimum voltage in 50mV units.
+      bit_offset: 10
+      bit_size: 10
+    - name: MAX_POWER_250MW
+      description: Maximum power in 250mW units.
+      bit_offset: 0
+      bit_size: 10
+fieldset/APDO:
+  description: Augmented Power Data Object.
+  bit_size: 32
+  extends: PDO
+  fields:
+    - name: APDO_TYPE
+      description: Augmented PDO type.
+      bit_offset: 28
+      bit_size: 2
+fieldset/SPR_PPS_APDO:
+  description: SPR Programmable Power Supply. (PPS)
+  bit_size: 32
+  extends: APDO
+  fields:
+    - name: PPS_POWER_LIMITED
+      description: PPS power limited.
+      bit_offset: 27
+      bit_size: 1
+    - name: MAX_VOLTAGE_100MV
+      description: Maximum voltage in 100mV units.
+      bit_offset: 17
+      bit_size: 8
+    - name: MIN_VOLTAGE_100MV
+      description: Minimum voltage in 100mV units.
+      bit_offset: 8
+      bit_size: 8
+    - name: MAX_CURRENT_50MA
+      description: Maximum current in 50mA units.
+      bit_offset: 0
+      bit_size: 7
+fieldset/EPR_AVS_APDO:
+  description: Extended Power Range(EPR) Adjustable Voltage Supply.
+  bit_size: 32
+  extends: APDO
+  fields:
+    - name: PEAK_CURRENT
+      description: Peak current.
+      bit_offset: 26
+      bit_size: 2
+      enum: PEAK_CURRENT
+    - name: MAX_VOLTAGE_100MV
+      description: Maximum voltage in 100mV units.
+      bit_offset: 17
+      bit_size: 8
+    - name: MIN_VOLTAGE_100MV
+      description: Minimum voltage in 100mV units.
+      bit_offset: 8
+      bit_size: 8
+    - name: POWER_1W
+      description: PDP in 1W units.
+      bit_offset: 0
+      bit_size: 8
+fieldset/SPR_AVS_APDO:
+  description: Standard Power Range (SPR) Adjustable Voltage Supply.
+  bit_size: 32
+  extends: APDO
+  fields:
+    - name: PEAK_CURRENT
+      description: Peak current.
+      bit_offset: 26
+      bit_size: 2
+      enum: PEAK_CURRENT
+    - name: MAX_CURRENT_FOR_15V_10MA
+      description: Maximum current in 10mA units for 9V-15V.
+      bit_offset: 10
+      bit_size: 10
+    - name: MAX_CURRENT_FOR_20V_10MA
+      description: Maximum current in 10mA units for 15V-20V.
+      bit_offset: 0
+      bit_size: 10
+
+fieldset/EPRMOD:
+  description: Table 6.51 “EPR Mode Data Object (EPRMDO)”
+  bit_size: 32
+  fields:
+    - name: ACTION
+      description: Action
+      bit_offset: 24
+      bit_size: 8
+      enum: EPRMOD_ACTION
+    - name: DATA
+      description: EPR Mode Data
+      bit_offset: 16
+      bit_size: 8
+
+# Sink only PDO
+fieldset/FIXED_PDO_SINK:
+  description: Fixed supply PDO for sink.
+  bit_size: 32
+  extends: PDO
+  fields:
+    - name: DUAL_ROLE_POWER
+      description: Dual role power.
+      bit_offset: 29
+      bit_size: 1
+    - name: HIGH_CAPABILITY
+      description: High capability.
+      bit_offset: 28
+      bit_size: 1
+    - name: UNCONSTRAINED_POWER
+      description: Unconstrained power.
+      bit_offset: 27
+      bit_size: 1
+    - name: USB_COMMUNICATION_CAPABLE
+      description: USB communication capable.
+      bit_offset: 26
+      bit_size: 1
+    - name: DUAL_ROLE_DATA
+      description: Dual role data.
+      bit_offset: 25
+      bit_size: 1
+    - name: FAST_SWAP_CURRENT
+      description: Fast Role Swap required USB Type-C® Current
+      bit_offset: 23
+      bit_size: 2
+    - name: VOLTAGE_50MV
+      description: Voltage in 50mV units.
+      bit_offset: 10
+      bit_size: 10
+    - name: CURRENT_10MA
+      description: Operating current in 10mA units.
+      bit_offset: 0
+      bit_size: 10
+# RDO
+fieldset/RDO:
+  description: Request Data Object.
+  bit_size: 32
+  fields:
+    - name: OBJECT_POSITION
+      description: Object position
+      bit_offset: 28
+      bit_size: 3
+    - name: CAPABILITY_MISMATCH
+      description: Capability mismatch
+      bit_offset: 26
+      bit_size: 1
+    - name: USB_COMMUNICATION_CAPABLE
+      description: USB communication capable
+      bit_offset: 25
+      bit_size: 1
+    - name: NO_USB_SUSPEND
+      description: No USB suspend
+      bit_offset: 24
+      bit_size: 1
+    - name: UNCHUNKED_EXTENDED_MESSAGES_SUPPORTED
+      description: Unchunked extended messages supported
+      bit_offset: 23
+      bit_size: 1
+    - name: EPR_MODE_CAPABLE
+      description: EPR mode capable
+      bit_offset: 22
+      bit_size: 1
+fieldset/FIXED_RDO:
+  description: Table 6.22 “Fixed and Variable Request Data Object”
+  bit_size: 32
+  extends: RDO
+  fields:
+    - name: GIVE_BACK
+      description: Give back flag
+      bit_offset: 27
+      bit_size: 1
+    - name: CURRENT_10MA
+      description: Operating current in 10mA units
+      bit_offset: 10
+      bit_size: 10
+    - name: MINMAX_CURRENT_10MA
+      description: Minimum/Maximum operating current in 10mA units
+      bit_offset: 0
+      bit_size: 10
+fieldset/BATTERY_RDO:
+  description: Table 6.24 “Battery Request Data Object”
+  bit_size: 32
+  extends: RDO
+  fields:
+    - name: GIVE_BACK
+      description: Give back flag
+      bit_offset: 27
+      bit_size: 1
+    - name: POWER_250MW
+      description: Operating power in 250mW units
+      bit_offset: 10
+      bit_size: 10
+    - name: MINMAX_POWER_250MW
+      description: Minimum/Maximum operating power in 250mW units
+      bit_offset: 0
+      bit_size: 10
+fieldset/PPS_RDO:
+  description: Table 6.26 “PPS Request Data Object”
+  bit_size: 32
+  extends: RDO
+  fields:
+    - name: VOLTAGE_20MV
+      description: Output voltage in 20mV units
+      bit_offset: 9
+      bit_size: 12
+    - name: CURRENT_50MA
+      description: Operating current in 50mA units
+      bit_offset: 0
+      bit_size: 7
+fieldset/AVS_RDO:
+  description: Table 6.28 “AVS Request Data Object”
+  bit_size: 32
+  extends: RDO
+  fields:
+    - name: VOLTAGE_25MV
+      description: Output voltage in 25mV units (LSB 2bits are 0)
+      bit_offset: 9
+      bit_size: 12
+    - name: CURRENT_50MA
+      description: Operating current in 50mA units
+      bit_offset: 0
+      bit_size: 7
+fieldset/BSDO:
+  description: Table 6.47 “Battery Status Data Object (BSDO)”
+  bit_size: 32
+  fields:
+    - name: BATTERY_CAPACITY
+      description: Battery capacity
+      bit_offset: 16
+      bit_size: 16
+    # BATTERY_INFO
+    - name: INVALID
+      description: Invalid
+      bit_offset: 8
+      bit_size: 1
+    - name: BATTERY_PRESENT
+      description: Battery present
+      bit_offset: 9
+      bit_size: 1
+    - name: CHARGING_STATUS
+      description: Charging status
+      bit_offset: 10
+      bit_size: 2
+      enum: BSDO_BATTERY_CHARGING_STATUS
+fieldset/ADO:
+  description: Table 6.48 “Alert Data Object (ADO)”
+  bit_size: 32
+  fields:
+    # Type of Alart
+    - name: BATTERY_STATUS_CHANGE
+      description: Battery status change
+      bit_offset: 25
+      bit_size: 1
+    - name: OCP
+      description: Over current protection
+      bit_offset: 26
+      bit_size: 1
+    - name: OTP
+      description: Over temperature protection
+      bit_offset: 27
+      bit_size: 1
+    - name: OPERATING_CONDITION_CHANGE
+      description: Operating condition change
+      bit_offset: 28
+      bit_size: 1
+    - name: SOURCE_INPUT_CHANGE
+      description: Source input change
+      bit_offset: 29
+      bit_size: 1
+    - name: OVP
+      description: Over voltage protection
+      bit_offset: 30
+      bit_size: 1
+    - name: EXTENDED
+      description: Extended altert event
+      bit_offset: 31
+      bit_size: 1
+    # Type of Alter ends
+    - name: FIXED_BATTERIES
+      description: Battery number, 0 to 3
+      bit_offset: 20
+      bit_size: 4
+    - name: HOT_SWAPPABLE_BATTERYIES
+      description: Hot swappable batterie number, 4 to 7
+      bit_offset: 16
+      bit_size: 4
+    - name: EXTENDED_TYPE
+      description: Extended alert type
+      bit_offset: 0
+      bit_size: 4
+      enum: ADO_EXTENDED_TYPE
+fieldset/VDM_HEADER:
+  description: VDM Header
+  bit_size: 32
+  fields:
+    - name: VID
+      description: USB Vendor ID
+      bit_offset: 16
+      bit_size: 16
+    - name: TYPE
+      description: VDM Type
+      bit_offset: 15
+      bit_size: 1
+fieldset/STRUCTURED_VDM_HEADER:
+  description: Structured VDM Header
+  bit_size: 32
+  extends: VDM_HEADER
+  fields:
+    - name: MAJOR_VERSION
+      description: Major version
+      bit_offset: 13
+      bit_size: 2
+    - name: MINOR_VERSION
+      description: Minor version
+      bit_offset: 11
+      bit_size: 2
+    - name: OBJECT_POSITION
+      description: Object position
+      bit_offset: 8
+      bit_size: 3
+    - name: COMMAND_TYPE
+      description: Command type
+      bit_offset: 6
+      bit_size: 2
+    - name: COMMAND
+      description: Command
+      bit_offset: 0
+      bit_size: 5
+      enum: VDM_COMMAND_TYPE
+enum/PDO_TYPE:
+  bit_size: 2
+  variants:
+    - name: FIXED
+      description: Fixed supply
+      value: 0
+    - name: BATTERY
+      description: Battery
+      value: 1
+    - name: VARIABLE
+      description: Variable supply
+      value: 2
+    - name: AUGMENTED
+      description: Augmented PDO
+      value: 3
+enum/APDO_TYPE:
+  bit_size: 2
+  variants:
+    - name: SPR_PPS
+      description: Standard Power Range, Programmable Power Supply
+      value: 0
+    - name: EPR_AVS
+      description: Extended Power Range, Adjustable Voltage Supply
+      value: 1
+    - name: SPR_AVS
+      description: Standard Power Range, Adjustable Voltage Supply
+      value: 2
+enum/PORT_POWER_ROLE:
+  bit_size: 1
+  variants:
+    - name: SINK
+      description: Sink
+      value: 0
+    - name: SOURCE
+      description: Source
+      value: 1
+enum/PORT_DATA_ROLE:
+  bit_size: 1
+  variants:
+    - name: UFP
+      description: UFP
+      value: 0
+    - name: DFP
+      description: DFP
+      value: 1
+enum/SPEC_REVISION:
+  bit_size: 2
+  variants:
+    - name: R1_0
+      description: Revision 1.0
+      value: 0b00
+    - name: R2_0
+      description: Revision 2.0
+      value: 0b01
+    - name: R3_0
+      description: Revision 3.0
+      value: 0b10
+enum/CONTROL_MESSAGE_TYPE:
+  bit_size: 5
+  variants:
+    - name: GoodCRC
+      description: GoodCRC
+      value: 0b00000
+    - name: GotoMin
+      description: GotoMin
+      value: 0b00001
+    - name: Accept
+      description: Accept
+      value: 0b00010
+    - name: Reject
+      description: Reject
+      value: 0b00011
+    - name: Ping
+      description: Ping
+      value: 0b00100
+    - name: PS_RDY
+      description: PS_RDY
+      value: 0b00101
+    - name: Get_Source_Cap
+      description: Get_Source_Cap
+      value: 0b00110
+    - name: Get_Sink_Cap
+      description: Get_Sink_Cap
+      value: 0b00111
+    - name: DR_Swap
+      description: DR_Swap
+      value: 0b01000
+    - name: PR_Swap
+      description: PR_Swap
+      value: 0b01001
+    - name: VCONN_Swap
+      description: VCONN_Swap
+      value: 0b01010
+    - name: Wait
+      description: Wait
+      value: 0b01011
+    - name: Soft_Reset
+      description: Soft_Reset
+      value: 0b01100
+    - name: Not_Supported
+      description: Not_Supported
+      value: 0b10000
+    - name: Get_Source_Cap_Extended
+      description: Get_Source_Cap_Extended
+      value: 0b10001
+    - name: Get_Status
+      description: Get_Status
+      value: 0b10010
+    - name: FR_Swap
+      description: FR_Swap
+      value: 0b10011
+    - name: Get_PPS_Status
+      description: Get_PPS_Status
+      value: 0b10100
+    - name: Get_Country_Codes
+      description: Get_Country_Codes
+      value: 0b10101
+    - name: Get_Sink_Cap_Extended
+      description: Get_Sink_Cap_Extended
+      value: 0b10110
+    - name: Get_Source_Info
+      description: Get_Source_Info
+      value: 0b10111
+    - name: Get_Revision
+      description: Get_Revision
+      value: 0b11000
+enum/DATA_MESSAGE_TYPE:
+  bit_size: 5
+  variants:
+    - name: Source_Capabilities
+      description: Source_Capabilities
+      value: 0b00001
+    - name: Request
+      description: Request
+      value: 0b00010
+    - name: BIST
+      description: BIST
+      value: 0b00011
+    - name: Sink_Capabilities
+      description: Sink_Capabilities
+      value: 0b00100
+    - name: Battery_Status
+      description: Battery_Status
+      value: 0b00101
+    - name: Alert
+      description: Alert
+      value: 0b00110
+    - name: Get_Country_Info
+      description: Get_Country_Info
+      value: 0b00111
+    - name: Enter_USB
+      description: Enter_USB
+      value: 0b01000
+    - name: EPR_Request
+      description: EPR_Request
+      value: 0b01001
+    - name: EPR_Mode
+      description: EPR_Mode
+      value: 0b01010
+    - name: Source_Info
+      description: Source_Info
+      value: 0b01011
+    - name: Revision
+      description: Revision
+      value: 0b01100
+    - name: Vendor_Defined
+      description: Vendor_Defined
+      value: 0b01111
+enum/EXTENDED_MESSAGE_TYPE:
+  description: Table 6.54 “Extended Message Types”
+  bit_size: 5
+  variants:
+    - name: Source_Capabilities_Extended
+      value: 0b00001
+    - name: Status
+      value: 0b00010
+    - name: Get_Battery_Cap
+      value: 0b00011
+    - name: Get_Battery_Status
+      value: 0b00100
+    - name: Battery_Capabilities
+      value: 0b00101
+    - name: Get_Manufacturer_Info
+      value: 0b00110
+    - name: Manufacturer_Info
+      value: 0b00111
+    - name: Security_Request
+      value: 0b01000
+    - name: Security_Response
+      value: 0b01001
+    - name: Firmware_Update_Request
+      value: 0b01010
+    - name: Firmware_Update_Response
+      value: 0b01011
+    - name: PPS_Status
+      value: 0b01100
+    - name: Country_Info
+      value: 0b01101
+    - name: Country_Codes
+      value: 0b01110
+    - name: Sink_Capabilities_Extended
+      value: 0b01111
+    - name: Extended_Control
+      value: 0b10000
+    - name: EPR_Source_Capabilities
+      value: 0b10001
+    - name: EPR_Sink_Capabilities
+      value: 0b10010
+enum/PEAK_CURRENT:
+  bit_size: 2
+  variants:
+    - name: DEFAULT
+      description:
+      value: 0b00
+    - name: LowOverload
+      description:
+      value: 0b01
+    - name: MediumOverload
+      description:
+      value: 0b10
+    - name: HighOverload
+      description:
+      value: 0b11
+enum/EPRMOD_ACTION:
+  bit_size: 8
+  variants:
+    - name: ENTER
+      description: Enter (Sink Only)
+      value: 0x01
+    - name: ENTER_ACKNOWLEDGED
+      description: Enter Acknowledged (Source Only)
+      value: 0x02
+    - name: ENTER_SUCCEEDED
+      description: Enter Succeeded (Source Only)
+      value: 0x03
+    - name: ENTER_FAILED
+      description: Enter Failed (Source Only)
+      value: 0x04
+    - name: EXIT
+      description: Exit (Sink or Source)
+      value: 0x05
+enum/BSDO_BATTERY_CHARGING_STATUS:
+  bit_size: 2
+  variants:
+    - name: Charging
+      value: 0b00
+    - name: Discharging
+      value: 0b01
+    - name: Idle
+      value: 0b10
+enum/ADO_EXTENDED_TYPE:
+  bit_size: 4
+  variants:
+    - name: DFP_Power_State_Change
+      value: 1
+    - name: UFP_Power_Button_Press
+      value: 2
+    - name: UFP_Power_Button_Release
+      value: 3
+    - name: UFP_Wake
+      value: 4
+enum/VDM_COMMAND_TYPE:
+  bit_size: 5
+  variants:
+    - name: Discover_Identity
+      value: 0b00001
+    - name: Discover_SVIDs
+      value: 0b00010
+    - name: Discover_Modes
+      value: 0b00011
+    - name: Enter_Modal
+      value: 0b00100
+    - name: Exit_Modal
+      value: 0b00101
+    - name: Attention
+      value: 0b00110
